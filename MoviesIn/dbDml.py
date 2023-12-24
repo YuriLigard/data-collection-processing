@@ -2,7 +2,7 @@ class DbDml:
 
     def __init__(self, conn: object):
         self.conn = conn
-        self.expiration = 900 #15min
+        self.expiration = 1800 #30min
 
 
     def add(self, keyUrl: str, value: str) -> str:
@@ -11,6 +11,9 @@ class DbDml:
     
     def seach(self, keycahe):
         return self.conn.get(keycahe)
+    
+    ## Exluir cache 
+    ## Mudar tmp
     
 
 
