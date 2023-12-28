@@ -19,7 +19,9 @@ class RequestsWithCaching:
 
         if incache == None:
             try:
-                resp = requests.get(self.baseUrl, self.params)
+                headers = self.params.pop('headers')
+                resp = requests.get(self.baseUrl, headers=headers, params=self.params)
+                self.params['headers'] = {}
                 value = resp.text
                 self.dbcache.add(keycache, value)
                 print("----->  ",resp.url)
