@@ -21,10 +21,10 @@ class RequestsWithCaching:
             try:
                 headers = self.params.pop('headers')
                 resp = requests.get(self.baseUrl, headers=headers, params=self.params)
-                self.params['headers'] = {}
+                self.params['headers'] = headers
                 value = resp.text
                 self.dbcache.add(keycache, value)
-                print("----->  ",resp.url)
+                #print("----->  ",resp.url)
             except requests.exceptions.ConnectionError as err:   # Montar conjunto de ex...
                 print('\n requests: {0} \n'.format(err)) # subs por geração de logs 
         else:
@@ -44,7 +44,7 @@ class RequestsWithCaching:
                 resp = requests.post(self.baseUrl, headers=self.params['headers'], data=self.params['data'])
                 value = resp.text
                 self.dbcache.add(keycache, value)
-                print("----->  ",resp.url)
+                #print("----->  ",resp.url)
             except requests.exceptions.ConnectionError as err:   # Montar conjunto de ex...
                 print('\n requests: {0} \n'.format(err)) # subs por geração de logs 
         else:

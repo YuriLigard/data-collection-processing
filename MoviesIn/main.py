@@ -5,7 +5,7 @@ from tmdb import MovieInfo
 if __name__ == "__main__":
 
     ms = MovieSuggestionsProvide()
-    listmovies = ms.get("O espaço entre nós")
+    listmovies = ms.get("Sohor dos Aneis")
 
     mi = MovieInfo()
     for movie in listmovies:

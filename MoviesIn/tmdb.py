@@ -41,7 +41,7 @@ class MovieInfo:
         self.params["query"] = NameMovie
         self.params['language'] = language
         #print("***",self.params)
-        print("***",self.headers['Authorization'])
+        #print("***",self.headers['Authorization'])
 
         request = RequestsWithCaching(self.endpoint, self.params, self.dbcache)
         resp = request.get() # Mudar só os paramns
@@ -52,7 +52,7 @@ class MovieInfo:
         request2= RequestsWithCaching(url, self.params, self.dbcache)
         resp2 = request2.get() # Mudar só os paramns
         resp2 = json.loads(resp2)
-        resp['link'] = resp2
+        resp['link'] = resp2['results']['BR']['link']
         return ContentPrinting.get_MovieInfo(resp)
     
 
