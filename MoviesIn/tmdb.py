@@ -1,21 +1,11 @@
 import os 
-import json
+from resquests import Requests
+from interfaces.Iapi import Iapi
 
-from resquests_with_caching import RequestsWithCaching
-from factoryDb import FactoryDb
-from conndb import Conndb
-from dbDml import DbDml
-
-from contentP import ContentPrinting
-
-
-class MovieInfo:
+class MovieInfo(Iapi):
 
     def __init__(self) -> None:
 
-        print ("Entrou no __init__")
-
-        # Params API
         self.headers = dict()
         self.params = dict()
 
@@ -26,40 +16,33 @@ class MovieInfo:
 
         self.params['page'] = 1
         self.params['include_adult'] = False
-
-
-        # Creating DB 
-        redis = FactoryDb()
-        redis.createConn(Conndb)
-        self.dbcache = redis.createDml(DbDml)
-
-    
+        
 
     def get(self, NameMovie, language='pt-BR'):
 
-        self.params["headers"] = self.headers
         self.params["query"] = NameMovie
         self.params['language'] = language
-        #print("***",self.params)
-        #print("***",self.headers['Authorization'])
 
-        request = RequestsWithCaching(self.endpoint, self.params, self.dbcache)
-        resp = request.get() # Mudar só os paramns
-        
-        resp = json.loads(resp)
-        url = f"https://api.themoviedb.org/3/movie/{resp['results'][0]['id']}/watch/providers"
+    
+        requestSynopsis = Requests(baseUrl=self.endpoint, params=self.params, headers=self.headers)
+        movieSynopsis = requestSynopsis.get() 
 
-        request2= RequestsWithCaching(url, self.params, self.dbcache)
-        resp2 = request2.get() # Mudar só os paramns
-        resp2 = json.loads(resp2)
-        resp['link'] = resp2['results']['BR']['link']
-        return ContentPrinting.get_MovieInfo(resp)
+        if movieSynopsis.json().get('results'):
+            url = f"https://api.themoviedb.org/3/movie/{movieSynopsis.json()['results'][0]['id']}/watch/providers"
+            requestStreaming = Requests(baseUrl=url, params=self.params, headers=self.headers)  
+            streamingLink = requestStreaming.get()
+
+            return movieSynopsis, streamingLink
+
+
+        return movieSynopsis, None
     
 
+    
 
 if __name__ == '__main__':
     app = MovieInfo()
 
     #filme = input("nome filme: ")
-    res = app.get("Kung Fu")
-    print(res)
+    print(app.get("Kung Fu"))
+  

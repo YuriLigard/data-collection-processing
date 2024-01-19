@@ -9,7 +9,7 @@ class DbDml:
         
         return self.conn.set(name=keyUrl, value=value, ex=self.expiration)
     
-    def seach(self, keycahe):
+    def search(self, keycahe):
         return self.conn.get(keycahe)
     
     ## Exluir cache 

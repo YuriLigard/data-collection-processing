@@ -1,18 +1,21 @@
-from conndb import Conndb
-from dbDml import DbDml
+from typing import Type
+
+from interfaces.absDB import absDB
+from interfaces.Iconndb import Iconndb
+from interfaces.Idbbml import Idbml
 
 
-class FactoryDb:
+class FactoryDb(absDB):
 
 
-    def createConn(self, database: object) -> object:
+    def createConn(self, database: Type[Iconndb]) -> Iconndb:
 
         self.__conn = database()
         self.__conn = self.__conn.connect()
         return self.__conn
     
    
-    def createDml(self, databaseDml: object) -> object:
+    def createDml(self, databaseDml: Type[Idbml]) -> Idbml:
 
         self.__insert = databaseDml(self.__conn)
         return self.__insert
