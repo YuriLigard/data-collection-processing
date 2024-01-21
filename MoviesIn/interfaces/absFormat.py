@@ -6,5 +6,5 @@ from abc import ABC, abstractmethod
 class absFormat(ABC):
 
     @abstractmethod
-    def create(self, validate: Type[IJsonFormat]) -> IJsonFormat:
+    def create(self, format: Type[IJsonFormat]) -> IJsonFormat:
         raise Exception("ddd")
