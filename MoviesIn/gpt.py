@@ -8,7 +8,6 @@ class MovieSuggestionsProvide(Iapi):
 
     def __init__(self) -> None:
 
-
         # Params API
         self.headers = dict()
         self.data = dict()

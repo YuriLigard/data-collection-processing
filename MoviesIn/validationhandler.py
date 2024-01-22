@@ -12,6 +12,7 @@ class ValidationHandler(IvalidationHandler):
 
         movietitles = json.loads(movietitles['choices'][0]['message']['content'])
     
+        
         if isinstance(movietitles[(list(movietitles.keys())[0])], list):
             
             return True
@@ -21,10 +22,11 @@ class ValidationHandler(IvalidationHandler):
 
     def validMovieInfo(self, respStreamingLink: object) -> bool:
 
-        if respStreamingLink:
-            respStreamingLink = json.loads(respStreamingLink.text)
-            
-            if respStreamingLink.get('results'):
+        #print(respStreamingLink.json())
+        if respStreamingLink.status_code == 200:
+            respStreamingLink = json.loads(respStreamingLink.text)  # erro
+            if respStreamingLink['results'].get('BR'):
+
                 return True
         
         return False
