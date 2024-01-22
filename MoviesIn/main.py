@@ -1,6 +1,6 @@
-from conndb import Conndb
-from dbDml import DbDml
-from factoryDb import FactoryDb
+#from conndb import Conndb
+#from dbDml import DbDml
+#from factoryDb import FactoryDb
 
 from gpt import MovieSuggestionsProvide
 from tmdb import MovieInfo
@@ -25,9 +25,9 @@ if __name__ == "__main__":
     
 
     # Factory DB 
-    factoryDb = FactoryDb()
-    redisConn = factoryDb.createConn(Conndb)
-    redisCache = factoryDb.createDml(DbDml)
+    #factoryDb = FactoryDb()
+    #redisConn = factoryDb.createConn(Conndb)
+    #redisCache = factoryDb.createDml(DbDml)
 
     # Factorys API
     factoryAPI = FactoryRequestAPI()
@@ -46,12 +46,14 @@ if __name__ == "__main__":
 
     key = "Os "  ###
 
-    # if key in cache:
+    # if key in cache: #criar chache gpt e cache tmdb
 
     # else: 
     respgpt = gptAPI.get(key)
 
-    if respgpt:
+    
+
+    if respgpt != None:
 
         if validate.validMovieSuggestions(respgpt):
             MovieSuggestionsDict = jsonFormat.respGptFormat(key, respgpt)
@@ -59,21 +61,28 @@ if __name__ == "__main__":
             for nameMovie in MovieSuggestionsDict[key]:
                 respSynopsis, respStreamingLink = tmdbAPI.get(nameMovie)
              
-                if respSynopsis:
-                    if validate.validMovieInfo(respStreamingLink):
+                if respSynopsis != None:
+                    validRespSynopsis, validRespStreamingLink = validate.validMovieInfo(respSynopsis, respStreamingLink)
+                    if validRespSynopsis and validRespStreamingLink:
                         resp = jsonFormat.respTmdbFormat(nameMovie, respSynopsis, respStreamingLink)
-                    else:
+                        print(resp)
+                    elif validRespSynopsis:
                         resp = jsonFormat.respTmdbFormat(nameMovie, respSynopsis, None)
-                
-                    print(resp)
-
+                        print(resp)
+                    else:
+                        #"Erro code TMDB"
+                        print("error: ",respSynopsis.status_code)
+                        print(respSynopsis.json()["error"]["message"])
                 else:
-                    print("não ok")
+                    print("Erro None TMDB")
         else:
-            print("errooooo!")
-    else:
-        print("Uh")
+            #"Erro code GPT"
+            print("error: ",respgpt.status_code)
+            print(respgpt.json()["error"]["message"])
 
+    else:
+        print("Erro None GPT")
+       
 
 
 

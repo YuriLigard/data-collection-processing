@@ -36,7 +36,7 @@ class MovieInfo(Iapi):
             return movieSynopsis, streamingLink
 
 
-        return None, None
+        return movieSynopsis, None
     
 
     
