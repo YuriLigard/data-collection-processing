@@ -1,24 +1,12 @@
-import json
 
 
-
-class ContentPrinting:
-
-    def get_MovieSuggestions(resp: dict):
-
-        movietitles  = json.loads(resp['choices'][0]['message']['content'])
-
-        return movietitles[list(movietitles.keys())[0]]
-
-
-
-    def get_MovieInfo(resp: dict):
-        
-        movieInfo = resp["results"][0]
-        return f"""
-                Title: {movieInfo['original_title']}\n
-                Avaliação: {movieInfo['vote_average']}\n
-                História: {movieInfo['overview']}\n
-                Link: {resp['link']}\n"""  #melhorar isso
-                
+class Content:
     
+    def printing(self, nameMovie: str, infoMovie: str) -> str:
+        Synopsis, link = infoMovie.split(">>")
+        print(f"""
+              \033[1mTítulo do Filme:\033[0m {nameMovie}
+              \033[1mResumo:\033[0m {Synopsis}
+              \033[1mOnde Posso Assistir:\033[0m {link}\n
+            """)
+

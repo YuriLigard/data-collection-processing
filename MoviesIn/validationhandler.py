@@ -17,20 +17,17 @@ class ValidationHandler(IvalidationHandler):
         
         return False
 
-    def validMovieInfo(self, respSynopsis: object, respStreamingLink: object) -> bool:
+    def validMovieInfo(self, respStreamingLink: object) -> bool:
 
         #print(respStreamingLink.json())
-        if respSynopsis.status_code == 200 and respStreamingLink.status_code == 200:
+        if respStreamingLink.status_code == 200:
             respStreamingLink = json.loads(respStreamingLink.text)  # erro
             if respStreamingLink['results'].get('BR'):
-
-                return True, True
+                
+                return True
             
-
-            return True, False
-        
-        
-        return False, False
+            
+        return False
     
             
 

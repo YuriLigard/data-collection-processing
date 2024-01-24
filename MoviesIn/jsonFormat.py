@@ -5,16 +5,16 @@ from interfaces.IJsonFormat import IJsonFormat
 
 class JsonFormat(IJsonFormat):
 
-    def respGptFormat(self, key, resp: object) -> dict:
+    def respGptFormat(self, resp: object) -> dict:
 
         movietitles  = json.loads(resp.text)
         movietitles = json.loads(movietitles['choices'][0]['message']['content'])
         movietitles = movietitles[(list(movietitles.keys())[0])]
 
-        return {key: movietitles}
+        return ">>".join(movietitles)
     
 
-    def respTmdbFormat(self, key, resp: object, resp1: object) -> dict:
+    def respTmdbFormat(self, resp: object, resp1: object) -> dict:
     
         movieSynopsis = json.loads(resp.text)
         movieSynopsis = movieSynopsis['results'][0].get('overview')
@@ -23,9 +23,10 @@ class JsonFormat(IJsonFormat):
             streamingLink = json.loads(resp1.text)
             streamingLink =  streamingLink['results']['BR']['link']
         else:
-            streamingLink = None
+            streamingLink = "None"
+        
 
-        return {key: [movieSynopsis, streamingLink]}
+        return ">>".join([movieSynopsis, streamingLink])
     
 
     def joinRespTmdbGpt(self, key, respGPT: dict, respTmdb: dict) -> dict:

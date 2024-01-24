@@ -27,15 +27,16 @@ class MovieInfo(Iapi):
         requestSynopsis = Requests(baseUrl=self.endpoint, params=self.params, headers=self.headers)
         movieSynopsis = requestSynopsis.get() 
 
-        if movieSynopsis.json()["total_results"] > 0:
-            url = f"https://api.themoviedb.org/3/movie/{movieSynopsis.json()['results'][0]['id']}/watch/providers"
-            # 322 pra simular um erro, correto é 3t
-            requestStreaming = Requests(baseUrl=url, params=self.params, headers=self.headers)  
-            streamingLink = requestStreaming.get()
-
-            return movieSynopsis, streamingLink
-
-
+        if movieSynopsis != None and movieSynopsis.json().get("total_results") != None:
+            if movieSynopsis.json().get("total_results") > 0:
+                #print(movieSynopsis.text)
+                url = f"https://api.themoviedb.org/3/movie/{movieSynopsis.json()['results'][0]['id']}/watch/providers"
+                # 322 pra simular um erro, correto é 3t
+                requestStreaming = Requests(baseUrl=url, params=self.params, headers=self.headers)  
+                streamingLink = requestStreaming.get()
+                
+                return movieSynopsis, streamingLink
+            
         return movieSynopsis, None
     
 

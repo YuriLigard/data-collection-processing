@@ -5,17 +5,18 @@ class Conndb:
 
     __statusBase = False
 
-    def __init__(self):
+    def __init__(self, db=0):
 
         self.host     = "127.0.0.1"
         self.port     = 6379
+        self.db       = db
         self.decode   = True
 
 
     def connect(self):
 
         try:
-            conn = redis.Redis(host=self.host, port=self.port, decode_responses=self.decode)
+            conn = redis.Redis(host=self.host, port=self.port, db=self.db, decode_responses=self.decode)
             __class__.__statusBase = conn.ping() 
         except redis.exceptions.ConnectionError as err:
             print('\n Conn Redis: {0} \n'.format(err))

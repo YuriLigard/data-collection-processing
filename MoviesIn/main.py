@@ -1,6 +1,10 @@
-#from conndb import Conndb
-#from dbDml import DbDml
-#from factoryDb import FactoryDb
+#!/usr/bin/env python3
+
+import sys
+
+from conndb import Conndb
+from dbDml import DbDml
+from factoryDb import FactoryDb
 
 from gpt import MovieSuggestionsProvide
 from tmdb import MovieInfo
@@ -12,22 +16,18 @@ from factoryValidation import FactoryValidation
 from jsonFormat import JsonFormat
 from factoryFormat import FactoryFormat
 
+from contentP import Content
 
 if __name__ == "__main__":
 
-    #ms = MovieSuggestionsProvide()
-    #listmovies = ms.get("Sohor dos Aneis")
+    #Factory DB 
+    factoryDb = FactoryDb()
+    redisConnGpt = factoryDb.createConn(Conndb, db=0)
+    redisCacheGpt = factoryDb.createDml(DbDml, redisConnGpt)
+    #
+    redisConnTmdb = factoryDb.createConn(Conndb, db=1)
+    redisCacheTmdb = factoryDb.createDml(DbDml, redisConnTmdb)
 
-    #mi = MovieInfo()
-    #for movie in listmovies:
-        #print(movie)
-        #print(mi.get(movie))
-    
-
-    # Factory DB 
-    #factoryDb = FactoryDb()
-    #redisConn = factoryDb.createConn(Conndb)
-    #redisCache = factoryDb.createDml(DbDml)
 
     # Factorys API
     factoryAPI = FactoryRequestAPI()
@@ -44,70 +44,84 @@ if __name__ == "__main__":
 
     #####
 
-    key = "Os "  ###
+    content = Content() 
+    ###########
+
+    key = " ".join(sys.argv[1:])
 
     # if key in cache: #criar chache gpt e cache tmdb
-
+  
     # else: 
-    respgpt = gptAPI.get(key)
+    rCacheGpt = redisCacheGpt.search(key)
+    if rCacheGpt:
 
-    
+        MovieSuggestionsList = rCacheGpt.split(">>")
 
-    if respgpt != None:
-
-        if validate.validMovieSuggestions(respgpt):
-            MovieSuggestionsDict = jsonFormat.respGptFormat(key, respgpt)
-
-            for nameMovie in MovieSuggestionsDict[key]:
-                respSynopsis, respStreamingLink = tmdbAPI.get(nameMovie)
-             
-                if respSynopsis != None:
-                    validRespSynopsis, validRespStreamingLink = validate.validMovieInfo(respSynopsis, respStreamingLink)
-                    if validRespSynopsis and validRespStreamingLink:
-                        resp = jsonFormat.respTmdbFormat(nameMovie, respSynopsis, respStreamingLink)
-                        print(resp)
-                    elif validRespSynopsis:
-                        resp = jsonFormat.respTmdbFormat(nameMovie, respSynopsis, None)
-                        print(resp)
-                    else:
-                        #"Erro code TMDB"
-                        print("error: ",respSynopsis.status_code)
-                        print(respSynopsis.json()["error"]["message"])
-                else:
-                    print("Erro None TMDB")
-        else:
-            #"Erro code GPT"
-            print("error: ",respgpt.status_code)
-            print(respgpt.json()["error"]["message"])
+        for nameMovie in MovieSuggestionsList:
+            rCacheTmdb = redisCacheTmdb.search(nameMovie)
+            content.printing(nameMovie, rCacheTmdb)
 
     else:
-        print("Erro None GPT")
+        
+        respgpt = gptAPI.get(key)
+
+        if respgpt != None:
+
+            if validate.validMovieSuggestions(respgpt):
+                MovieSuggestions = jsonFormat.respGptFormat(respgpt)
+                #Salvar em Cache aqui
+                redisCacheGpt.add(key, MovieSuggestions)
+                
+                MovieSuggestionsList = MovieSuggestions.split(">>")
+                for nameMovie in MovieSuggestionsList:
+                    print(nameMovie)
+                    rCacheTmdb = redisCacheTmdb.search(nameMovie)
+                    if rCacheTmdb:
+                        content.printing(nameMovie, rCacheTmdb)
+                    else:
+                        respSynopsis, respStreamingLink = tmdbAPI.get(nameMovie)
+             
+                        if respSynopsis != None and respStreamingLink != None:
+                            validRespStreamingLink = validate.validMovieInfo(respStreamingLink)
+                            if validRespStreamingLink:
+                                resp = jsonFormat.respTmdbFormat(respSynopsis, respStreamingLink)
+                                content.printing(nameMovie, resp)
+                                # Salvar Em cache aqui
+                                redisCacheTmdb.add(nameMovie, str(resp))
+                            else:
+                                resp = jsonFormat.respTmdbFormat(respSynopsis, None)
+                                content.printing(nameMovie, resp)
+                                redisCacheTmdb.add(nameMovie, str(resp))
+                                # Salvar Em cache aqui
+
+                        elif respSynopsis != None and respSynopsis.json().get("status_message") != None:
+                            print("error: ",respSynopsis.status_code)
+                            print(respSynopsis.json().get("status_message"))
+                            break
+                        elif respSynopsis != None and respSynopsis.json().get("total_results") == 0:
+                            print(nameMovie, ".....")
+                            continue
+                        else:
+                            print(respSynopsis)
+                            break
+
+                    
+            else:
+                #"Erro code GPT"
+                print("error: ",respgpt.text)
+                #print(respgpt.json()["error"]["message"])
+
+        else:
+            print("Erro None GPT")
        
 
 
 
 
 
-
-
-
-
-    #respSynopsis, respStreamingLink = tmdbAPI.get("Interstelar")
-
-    #print(respSynopsis, respStreamingLink)
-
-    #print(jsonFormat.respTmdbFormat(respSynopsis, respStreamingLink))
-
-    #resp = gptAPI.get("Kung Fu")
-
-    #print(jsonFormat.respGptFormat(resp))
-
-    #print("-------> ",respSynopsis, respStreamingLink)
-
-
-    #print(validate.validMovieSuggestions(resp))
-
-    #print(validate.validMovieInfo(respStreamingLink))
+# ped
+# Clean and Coment
+# Link Sinb Corr
 
                                 
 
