@@ -4,7 +4,7 @@ import json
 from resquests import Requests
 from interfaces.Iapi import Iapi
 
-class MovieSuggestionsProvide(Iapi):
+class MovieSuggestionsProvider(Iapi):
 
     def __init__(self) -> None:
 
@@ -32,16 +32,3 @@ class MovieSuggestionsProvide(Iapi):
         
 
         return MovieSuggestions
-        
-    
-
-
-if __name__ == '__main__':
-    app = MovieSuggestionsProvide()
-
-    cont = 0
-    while cont <= 2:
-        filme = input("nome filme: ")
-        res = app.get(filme)
-        print(res)
-        cont+=1
