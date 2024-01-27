@@ -8,8 +8,8 @@ class absDB(ABC):
 
     @abstractmethod
     def createConn(self, database: Type[Iconndb]) -> Iconndb:
-        raise Exception("ddd")
+        raise Exception("Instancie aqui")
     
     @abstractmethod
     def createDml(self, databaseDml: Type[Idbml]) -> Idbml:
-        raise Exception("ddd")
+        raise Exception("Instancie aqui")

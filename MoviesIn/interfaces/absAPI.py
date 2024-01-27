@@ -6,5 +6,5 @@ class absAPI(ABC):
 
     @abstractmethod
     def create(self, RequestAPI: Type[Iapi]) -> Iapi:
-        raise Exception("Impelmente....")
+        raise Exception("Instancie aqui")
     

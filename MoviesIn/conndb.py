@@ -1,7 +1,9 @@
 import redis
 
+from interfaces.Iconndb import Iconndb
 
-class Conndb:
+
+class Conndb(Iconndb):
 
     __statusBase = False
 

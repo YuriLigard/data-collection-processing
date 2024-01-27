@@ -1,19 +1,19 @@
-class DbDml:
+from interfaces.Idbbml import Idbml
+
+
+class DbDml(Idbml):
 
     def __init__(self, conn: object):
         self.conn = conn
         self.expiration = 1800 #30min
 
 
-    def add(self, keyUrl: str, value: str) -> str:
+    def add(self, key: str, value: str) -> str:
         
-        return self.conn.set(name=keyUrl, value=value, ex=self.expiration)
+        return self.conn.set(name=key, value=value, ex=self.expiration)
     
-    def search(self, keycahe):
-        return self.conn.get(keycahe)
-    
-    ## Exluir cache 
-    ## Mudar tmp
+    def get(self, key):
+        return self.conn.get(key)
     
 
 

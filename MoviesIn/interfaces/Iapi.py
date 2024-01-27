@@ -5,8 +5,12 @@ class Iapi(ABC):
 
     @abstractmethod
     def __init__(self) -> None:
-        raise Exception("implement a method...")
+        raise Exception("Implemente o método construtor para API")
+        # Params API
+        # [GPT] https://platform.openai.com/docs/api-reference/introduction
+        # [TMDB] https://developer.themoviedb.org/reference/intro/getting-started
+
 
     @abstractmethod
     def get(self) -> object | None:
-        raise Exception("implement a method...")
+        raise Exception("Implemente um método para executar o prompt")

@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
    
   # Verifica o cache GPT
-rCacheGpt = redisCacheGpt.search(key)
+rCacheGpt = redisCacheGpt.get(key)
 
 if rCacheGpt:
     # Se encontrou no cache GPT, verifica no cache TMDB
@@ -77,7 +77,7 @@ if rCacheGpt:
 
     for nameMovie in MovieSuggestionsList:
         # Busca no cache TMDB
-        rCacheTmdb = redisCacheTmdb.search(nameMovie)
+        rCacheTmdb = redisCacheTmdb.get(nameMovie)
 
         if rCacheTmdb:
             # Se encontrou no cache TMDB, imprime o conteúdo
@@ -129,7 +129,7 @@ else:
             MovieSuggestionsList = MovieSuggestions.split(">>")
 
             for nameMovie in MovieSuggestionsList:
-                rCacheTmdb = redisCacheTmdb.search(nameMovie)
+                rCacheTmdb = redisCacheTmdb.get(nameMovie)
 
                 if rCacheTmdb:
                     content.printing(nameMovie, rCacheTmdb)
@@ -141,7 +141,6 @@ else:
 
                         if validRespStreamingLink:
                             resp = jsonFormat.respTmdbFormat(respSynopsis, respStreamingLink)
-                            print(resp)
                             content.printing(nameMovie, resp)
                             redisCacheTmdb.add(nameMovie, resp)
                         else:
@@ -153,7 +152,7 @@ else:
                         print(respSynopsis.json().get("status_message"))
                         break
                     elif respSynopsis is not None and respSynopsis.json().get("total_results") == 0:
-                        print(nameMovie)
+                        print(f"\033[1mTítulo do Filme:\033[0m {nameMovie}")
                         continue
                     else:
                         print(respSynopsis)

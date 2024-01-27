@@ -7,4 +7,4 @@ class absValidation(ABC):
 
     @abstractmethod
     def create(self, validate: Type[IvalidationHandler]) -> IvalidationHandler:
-        raise Exception("ddd")
+        raise Exception("Instancie aqui")

@@ -25,7 +25,7 @@ class MovieSuggestionsProvider(Iapi):
 
     def get(self, NameMovie, limit=5):
 
-        self.data['messages'][0]['content'] = 'suggest {0} films for those who like {1}. Returns only movie names in JSON format'.format(limit, NameMovie.upper())
+        self.data['messages'][0]['content'] = f"Recommend {limit} movies for those who enjoy {NameMovie.upper()}." + "Returns only the movie names in JSON format, in the following structure: { movies: [movie1, movie2, ...]}"
 
         requestSuggestions = Requests(baseUrl=self.endpoint, params=json.dumps(self.data), headers=self.headers)
         MovieSuggestions = requestSuggestions.post()

@@ -7,4 +7,4 @@ class absFormat(ABC):
 
     @abstractmethod
     def create(self, format: Type[IJsonFormat]) -> IJsonFormat:
-        raise Exception("ddd")
+        raise Exception("Instacie aqui")

@@ -4,16 +4,20 @@ from abc import ABC, abstractmethod
 
 
 class Idbml(ABC):
+
+    @abstractmethod
+    def __init__(self, conn: Type[Iconndb]) -> None:
+
+        "- conn: Type[Iconndb] - Objeto de conexão com o banco"
     
+        raise Exception ("Implemente o método construtor para manipulação do banco de dados")
 
-    def __init__(self, conn: Type[Iconndb]):
-        raise Exception ("Impl...")
+    @abstractmethod
+    def add(self, key: str, value: str) -> str:
+        
+        raise Exception ("Implemente um método para inserção no banco")
 
-
-    def add(self) -> str:
-        raise Exception ("Impl...")
-
-
-    def search(self, search) -> str | None:
-        raise Exception ("Impl...")
+    @abstractmethod
+    def get(self, key: str) -> str | None:
+        raise Exception ("Implemente um método para obter dados no banco")
     
